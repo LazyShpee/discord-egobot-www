@@ -63,49 +63,52 @@ function show_module_info(name) {
               cache: false
             });
           });
-          console.log('lmkmkl');
           for (var i in res.data.options) {
             var o = res.data.options[i]; // Current option
             var v = res.data.options_values[i]; // Current option value
             var option_html = '';
-            console.log(o.type);
-            switch(o.type) {
+             switch(o.type) {
               case "toggle":
                 option_html = 
-                  '<label class="toggle">' +
-                    '<input type="checkbox"' + (v ? ' checked' : '') + '/>' +
-                    '<span class="handle"></span>' +
-                  '</label>';
+                  '<div class="row">' +
+                    '<div class="col-md-12">' +
+                      '<span  type="' + o.type + '" option="' + i + '" class="option-value pull-right">' +
+                        '<label class="toggle">' +
+                          '<input type="checkbox"' + (v ? ' checked' : '') + '/>' +
+                          '<span class="handle"></span>' +
+                        '</label>' +
+                      '</span>' +
+                    '<p>' + o.label + '</p>' +
+                  '</div>' +
+                '</div>'
                 break;
               case "color":
                 option_html =
-                  '<input type="text" class="color-pick form-control" value="#' + v + '" />';
+                '<div class="row">' +
+                  '<div class="col-md-12">' +
+                    '<span  type="' + o.type + '" option="' + i + '" class="option-value pull-right">' +
+                      '<input type="text" class="color-pick form-control" value="#' + v + '" />' +
+                    '</span>' +
+                    '<p>' + o.label + '</p>' +
+                  '</div>' +
+                '</div>'
                 break;
               case "editor":
                 option_html =
-                  '<div id="ed_' + i +'">' + v + '</div>';
+                  '<span id="ed_' + i +'">' + 'for i=1,10 do\n  print(i)\nend' + '</span>';
                 editors[i] = o.lang;
-                console.log('editor ' + i);
                 break;
             }
             
-            $('#module_options').append(
-              '<div class="row">' +
-                '<div class="col-md-12">' +
-                  '<span  type="' + o.type + '" option="' + i + '" class="option-value pull-right">' +
-                    option_html +
-                  '</span>' +
-                  '<p>' + o.label + '</p>' +
-                '</div>' +
-              '</div>');
+            $('#module_options').append(option_html);
+
           }
           for (var id in editors) {
             var lang = editors[id];
             editors[id] = ace.edit('ed_' + id);
             if (lang) {
-              editors[id] = getSession().setMode("ace/mode/" + lang);
+              editors[id] = editors[id].getSession().setMode("ace/mode/" + lang);
             }
-            console.log(lang);
           }
           $('.color-pick').colorpicker();
         }
